@@ -15,7 +15,8 @@
             'level',
             'food',
             'method',
-            'memo'
+            'memo',
+            'user_id'
         ];
     }
     
