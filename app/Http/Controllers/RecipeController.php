@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Recipe;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RecipeRequest; 
 
 use Illuminate\Http\Request;
 
@@ -12,6 +15,21 @@ class RecipeController extends Controller
         $recipe = Recipe::all();
         return view('recipes.index', ['recipes' => $recipe]); 
         // return $recipe->get();
+    }
+
+    public function create()
+    {
+        return view('recipes.create');
+    }
+
+    public function store(Recipe $recipe, RecipeRequest $request)
+    {
+        $input = $request['recipe'];
+        $input['user_id']=Auth::id();
+        $recipe->fill($input)->save();
+        return redirect('/recipes');
+        // return redirect('recipes.index' . $recipe->id);
+        // web.phpのstoreに対応するルーティングに変更する必要がある。
     }
 
     public function show(Recipe $recipe)
