@@ -11,4 +11,5 @@
             @endforeach
         </ul>
         <a href="{{ route('recipes.create') }}">レシピの作成</a>
+        </script>
 </x-app-layout>

@@ -37,4 +37,5 @@ Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipe
 Route::post('/recipes', [RecipeController::class, 'store']); 
 Route::get('/recipes/{recipe}/edit', [RecipeController::class, 'edit'])->name('recipes.edit');
 Route::put('/recipes/{recipe}', [RecipeController::class, 'update']);
+Route::delete('/recipes/{recipe}', [RecipeController::class, 'delete']);
 
