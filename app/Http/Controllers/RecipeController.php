@@ -34,6 +34,7 @@ class RecipeController extends Controller
 
     public function show(Recipe $recipe)
     {
-        return view('recipes.show', ['recipe' => $recipe]); 
+        return view('recipes.show')->with(['recipe' => $recipe]);
+        return redirect('/recipes/' . $recipe->id);
     }
 }
