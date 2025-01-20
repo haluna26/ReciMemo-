@@ -52,4 +52,10 @@ class RecipeController extends Controller
 
         return redirect('/recipes/' . $recipe->id);
     }
+
+    public function delete(Recipe $recipe)
+    {
+        $recipe->delete();
+        return redirect('/recipes');
+    }
 }
