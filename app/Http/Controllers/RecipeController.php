@@ -37,4 +37,19 @@ class RecipeController extends Controller
         return view('recipes.show')->with(['recipe' => $recipe]);
         return redirect('/recipes/' . $recipe->id);
     }
+
+    public function edit(Recipe $recipe)
+    {
+        return view('recipes.edit')->with(['recipe' => $recipe]);
+        return redirect('/recipes/{recipe}');
+    }
+
+    public function update(RecipeRequest $request, Recipe $recipe)
+    {
+        $input_recipe = $request['recipe'];
+        $input['user_id']=Auth::id();
+        $recipe->fill($input_recipe)->save();
+
+        return redirect('/recipes/' . $recipe->id);
+    }
 }
