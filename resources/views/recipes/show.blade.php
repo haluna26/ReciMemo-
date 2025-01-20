@@ -21,6 +21,7 @@
             <p>{{ $recipe->memo }}</p>
         </div>
     </div>
+    <div class="edit"><a href="/recipes/{{ $recipe->id }}/edit">編集</a></div>
     <div class="footer">
         <a href="/">戻る</a>
     </div>
