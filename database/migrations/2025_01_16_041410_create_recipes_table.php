@@ -14,14 +14,16 @@ return new class extends Migration
     if (!Schema::hasTable('recipes')) {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');  // name を title に変更
+            $table->text('ingredients');  // food を ingredients に変更
+            $table->text('instructions')->nullable();  // memo を instructions に変更
             $table->integer('value');
             $table->integer('level');
-            $table->text('food');
-            $table->text('method');
-            $table->text('memo')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->string('url')->nullable();
+            $table->string('image')->nullable();
+            $table->string('description')->nullable();
         });
     }
 }

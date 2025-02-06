@@ -6,10 +6,11 @@
         <ul>
             @foreach ($recipes as $recipe)
                 <li>
-                    <h2 class='namme'>
-                        <a href="/recipes/{{ $recipe->id }}">{{ $recipe->name }}</a>
+                    <h2 class='title'>
+                        <a href="/recipes/{{ $recipe->id }}">{{ $recipe->title }}</a>
                     </h2>
-                    満足度:{{ $recipe->value }}/5, 難易度:{{ $recipe->level }}/5
+                   <p>満足度:{{ $recipe->value }}/5, 難易度:{{ $recipe->level }}/5</p>
+                   <p>満足度:材料：{{ $recipe->ingredients }}</p>
                 </li>
             @endforeach
         </ul>

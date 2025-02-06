@@ -11,14 +11,18 @@
         use HasFactory;
     
         protected $fillable = [
-            'name',
+            'title',
             'value',
             'level',
-            'food',
-            'method',
-            'memo',
+            'ingredients', 
+            'url',
+            'image',
+            'description',
+            'instructions',
             'user_id'
         ];
+
+        protected $guarded = [];
     }
     
 
