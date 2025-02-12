@@ -17,6 +17,13 @@ class RecipeController extends Controller
         // return $recipe->get();
     }
 
+    // public function index(Recipe $recipe)
+    // {
+    //     $recipe = Recipe::all();
+    //     return view('recipes.index')->with(['posts' => $post->getPaginateByLimit()]; 
+    //     // return $recipe->get();
+    // }
+
     public function create(Request $request)
     {
         return view('recipes.create');
@@ -79,12 +86,15 @@ class RecipeController extends Controller
     $validated = $request->validate([
         'recipe.title' => 'required|string|max:255',
         'recipe.ingredients' => 'required|string',
+        'recipe.value' => 'nullable|integer|min:1|max:5',
+        'recipe.level' => 'nullable|integer|min:1|max:5',
     ]);
 
     $data = $request->all();
     $data['recipe']['title'] = $validated['recipe']['title'];
     $data['recipe']['ingredients'] = $validated['recipe']['ingredients'];
     $data['recipe']['user_id'] = Auth::id(); // ユーザーIDを追加
+    
 
     $recipe = new Recipe();
     $recipe->fill($data['recipe']);
