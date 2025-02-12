@@ -16,10 +16,10 @@
                         {{ __('Top') }}
                     </x-nav-link>
                     <x-nav-link :href="route('recipes.index')" :active="request()->routeIs('recipes.index')">
-                        {{ __('Recipes') }}
+                        {{ __('レシピ一覧') }}
                     </x-nav-link>
                     <x-nav-link :href="route('recipes.create')" :active="request()->routeIs('recipes.create')">
-                        {{ __('Create') }}
+                        {{ __('レシピ作成') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -77,10 +77,10 @@
                 {{ __('Top') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('recipes.index')" :active="request()->routeIs('recipes.index')">
-                {{ __('Recipes') }}
+                {{ __('レシピ一覧') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('recipes.create')" :active="request()->routeIs('recipes.create')">
-                {{ __('Create') }}
+                {{ __('レシピ作成') }}
             </x-responsive-nav-link>
         </div>
 

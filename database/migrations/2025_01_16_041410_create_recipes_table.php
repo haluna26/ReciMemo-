@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('url')->nullable();
             $table->string('image')->nullable();
-            $table->string('description')->nullable();
+            $table->string('description', 5000)->nullable();
         });
     }
 }
