@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shopping_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('item', 50);
+            $table->string('ingredient', 50);
             $table->timestamps();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
