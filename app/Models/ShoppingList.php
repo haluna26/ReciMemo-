@@ -11,7 +11,7 @@ class ShoppingList extends Model
     protected $table = 'shopping_lists';
 
     protected $fillable = [
-        'ingredient',
+        'item',
         'user_id'
     ];
 }

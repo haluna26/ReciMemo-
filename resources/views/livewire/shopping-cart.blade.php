@@ -8,10 +8,10 @@
                     <!-- <div class="flex items-center justify-center min-h-screen">  -->
                     <!-- flex flex-col items-center justify-center min-h-screen＝中央揃え -->
                     <div class="flex items-center space-x-2">
-                        <input type="text" wire:model="ingredient" 
+                        <input type="text" wire:model="item" 
                             class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 break-words"
                             placeholder="材料を入力">
-                        <!-- wire:model="ingredient"> -->
+                        <!-- wire:model="item"> -->
                         <!-- wire:modelはlivewireで設定した関数名にする -->
 
                         <!-- <button wire:click="addShoppingList">登録</button> -->
@@ -21,13 +21,13 @@
                     </div>
 
                     <!-- <ul class="grid grid-cols-8 sm:grid-cols-18 gap-1 mt-4"> -->
-                    @if (!empty($Ingredients) && $Ingredients->isNotEmpty())
+                    @if (!empty($Item) && $Item->isNotEmpty())
                         <ul class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-1 mt-4">
 
-                            @foreach($Ingredients as $ingredient)
+                            @foreach($items as $item)
                             <li class="flex justify-between items-center bg-gray-100 p-2 rounded-lg w-full">
-                                <span>{{ $ingredient->ingredient }} </span>
-                                <button wire:click="updateIngredient({{ $ingredient->id }})" class="text-red-500 hover:text-red-700">取消</button>
+                                <span>{{ $item->item }} </span>
+                                <button wire:click="updateItem({{ $item->id }})" class="text-red-500 hover:text-red-700">取消</button>
                             </li>
                             @endforeach
                         </ul>

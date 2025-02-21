@@ -7,7 +7,7 @@ use App\Models\ShoppingList;
 
 class ShoppingCart extends Component
 {
-    public $ingredient; //ここにデータが入る（入力中の材料）
+    public $item; //ここにデータが入る（入力中の材料）
     // public $Ingredients; //取得したデータを保持（登録済みの材料リスト）
     // public $undoneIngredients;
     // public $doneIngredients;
@@ -21,7 +21,7 @@ class ShoppingCart extends Component
     {
         // $this->Ingredients = ShoppingList::all(); //データを取得
         return view('livewire.shopping-cart', [
-            'Ingredients' => ShoppingList::all(),
+            'Item' => ShoppingList::all(),
         ]);
     }
 
@@ -38,19 +38,19 @@ class ShoppingCart extends Component
 
     public function addShoppingList()
     {
-        if (!empty($this->ingredient)) { //空チェックを追加
+        if (!empty($this->item)) { //空チェックを追加
             // $ingredient = new ShoppingList();
             // $ingredient->ingredient = $this->ingredient;
             // $ingredient->user_id = auth()->id(); //ユーザIDを設定
             // $ingredient->save();
             ShoppingList::create([
-                'ingredient' => $this->ingredient,
+                'item' => $this->item,
                 'user_id' => auth()->id(),
             ]);
 
             // $this->ingredient = null; //フィールドをリセット
             // $this->ingredient = '';
-            $this->reset('ingredient'); // Livewireのリセットメソッドを使用
+            $this->reset('item'); // Livewireのリセットメソッドを使用
 
             // リストを即時更新する⇨直ぐに入力欄が空になる
             // $this->Ingredients = ShoppingList::all();
@@ -67,13 +67,13 @@ class ShoppingCart extends Component
     //     }
     // }
 
-    public function updateIngredient($id)
+    public function updateItem($id)
     {
-        $ingredient = ShoppingList::find($id);
-        if ($ingredient) {
-            $ingredient->delete(); //削除の処理
+        $item = ShoppingList::find($id);
+        if ($item) {
+            $item->delete(); //削除の処理
             // $this->Ingredients = ShoppingList::all();
-            $this->emptySelf('ingredientDeleted'); //リアルタイム更新
+            $this->emptySelf('itemDeleted'); //リアルタイム更新
         }
     }
 }
