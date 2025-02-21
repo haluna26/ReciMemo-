@@ -19,6 +19,7 @@ use App\Http\Controllers\RecipeController;
 //     return view('posts.index');
 // });
 
+// ログイン画面に移行
 Route::get('/', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
