@@ -21,7 +21,7 @@ class ShoppingCart extends Component
     {
         // $this->Ingredients = ShoppingList::all(); //データを取得
         return view('livewire.shopping-cart', [
-            'Item' => ShoppingList::all(),
+            'items' => ShoppingList::all(),
         ]);
     }
 

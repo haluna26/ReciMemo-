@@ -21,7 +21,7 @@
                     </div>
 
                     <!-- <ul class="grid grid-cols-8 sm:grid-cols-18 gap-1 mt-4"> -->
-                    @if (!empty($Item) && $Item->isNotEmpty())
+                    @if (!empty($items) && $items->isNotEmpty())
                         <ul class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-1 mt-4">
 
                             @foreach($items as $item)
