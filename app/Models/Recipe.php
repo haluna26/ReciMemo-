@@ -19,21 +19,21 @@
             'image',
             'description',
             'instructions',
-            'user_id'
+            'user_id',
+            'category_id'
         ];
 
         protected $guarded = [];
 
-        // public function getByLimit(int $limit_count =10)
-        // {
-        //     return $this->orderBy('updated_at', 'DESC')->limit($limit_count)->get();
-        // }
+        protected $casts = [
+            'image' => 'array', // JSONとして使用
+        ];
 
-        // public function getPaginateByLimit(int $limit_count = 10)
-        // {
-        //     // 降順✖️limitで件数制限
-        //     return $this->orderBy('updated_at', 'DESC')->paginate($limit_count);
-        // }
+        // Categoryに対するリレーション　一対多　categoryは単数系に。
+        public function category()
+        {
+            return $this->belongsTo(Category::class);
+        }
     }
     
 
