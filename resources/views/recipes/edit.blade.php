@@ -19,38 +19,31 @@
                                     <p class="title__error" style="color:red">{{ $errors->first('recipe.title') }}</p>
                                         <!-- </div> -->
                                 </div>
+
                                 <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="content__value">
-                                        <!-- <div class='content__value'> -->
-                                        満足度
-                                    </label>
-                                    <!-- <select id="value" name="recipe[value]" class="border-2 border-gray-400 rounded-md p-2">
-                                        <option value="">選択してください</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select> -->
-                                    <select id="value" name="recipe[value]" class="border-2 border-gray-400 rounded-md p-2">
-                                        <option value="" {{ old('recipe.value', $recipe->value) == '' ? 'selected' : '' }}>選択してください</option>
-                                        <option value="1" {{ old('recipe.value', $recipe->value) == '1' ? 'selected' : '' }}>1</option>
-                                        <option value="2" {{ old('recipe.value', $recipe->value) == '2' ? 'selected' : '' }}>2</option>
-                                        <option value="3" {{ old('recipe.value', $recipe->value) == '3' ? 'selected' : '' }}>3</option>
-                                        <option value="4" {{ old('recipe.value', $recipe->value) == '4' ? 'selected' : '' }}>4</option>
-                                        <option value="5" {{ old('recipe.value', $recipe->value) == '5' ? 'selected' : '' }}>5</option>
-                                    </select>
-                                    /5
-                                    <!-- <input type='integer' name='recipe[value]' value="{{ $recipe->value }}" class="border-2 border-gray-400 rounded-md h-5 w-10">/5 -->
-                                    <p class="value__error" style="color:red">{{ $errors->first('recipe.value') }}</p>
-                                            <!-- </div> -->
+                                        <div class="category">
+                                            <label class="block text-gray-700 text-sm font-bold mb-2" for="category">
+                                                カテゴリー
+                                            </label>
+                                            <select id="category" name="recipe[category_id]" class="border-2 border-gray-400 rounded-md p-2">
+                                                <option value="">(選択する)</option>
+                                                <option value="new">＋新しいカテゴリーを作成</option>
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}" {{ old('recipe.category_id', $recipe->category_id) == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="content__level">
-                                        <!-- <div class='content__level'> -->
-                                        難易度
-                                    </label>
-                                    <!-- <select id="level" name="recipe[level]" class="border-2 border-gray-400 rounded-md p-2">
+
+                                <div class="flex w-full gap-x-0">
+                                    <div class="mb-4 flex-grow">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="content__value">
+                                            <!-- <div class='content__value'> -->
+                                            満足度
+                                        </label>
+                                        <!-- <select id="value" name="recipe[value]" class="border-2 border-gray-400 rounded-md p-2">
                                             <option value="">選択してください</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -58,18 +51,38 @@
                                             <option value="4">4</option>
                                             <option value="5">5</option>
                                         </select> -->
-                                        <select id="level" name="recipe[level]" class="border-2 border-gray-400 rounded-md p-2">
-                                            <option value="" {{ old('recipe.level', $recipe->level) == '' ? 'selected' : '' }}>選択してください</option>
-                                            <option value="1" {{ old('recipe.level', $recipe->level) == '1' ? 'selected' : '' }}>1</option>
-                                            <option value="2" {{ old('recipe.level', $recipe->level) == '2' ? 'selected' : '' }}>2</option>
-                                            <option value="3" {{ old('recipe.level', $recipe->level) == '3' ? 'selected' : '' }}>3</option>
-                                            <option value="4" {{ old('recipe.level', $recipe->level) == '4' ? 'selected' : '' }}>4</option>
-                                            <option value="5" {{ old('recipe.level', $recipe->level) == '5' ? 'selected' : '' }}>5</option>
+                                        <select id="value" name="recipe[value]" class="border-2 border-gray-400 rounded-md p-2">
+                                            <option value="" {{ old('recipe.value', $recipe->value) == '' ? 'selected' : '' }}>選択してください</option>
+                                            <option value="1" {{ old('recipe.value', $recipe->value) == '1' ? 'selected' : '' }}>1</option>
+                                            <option value="2" {{ old('recipe.value', $recipe->value) == '2' ? 'selected' : '' }}>2</option>
+                                            <option value="3" {{ old('recipe.value', $recipe->value) == '3' ? 'selected' : '' }}>3</option>
+                                            <option value="4" {{ old('recipe.value', $recipe->value) == '4' ? 'selected' : '' }}>4</option>
+                                            <option value="5" {{ old('recipe.value', $recipe->value) == '5' ? 'selected' : '' }}>5</option>
                                         </select>
                                         /5
-                                    <!-- <input type='integer' name='recipe[level]' value="{{ $recipe->level }}" class="border-2 border-gray-400 rounded-md h-5 w-10">/5 -->
-                                    <p class="level__error" style="color:red">{{ $errors->first('recipe.level') }}</p>
-                                        <!-- </div> -->
+                                        <!-- <input type='integer' name='recipe[value]' value="{{ $recipe->value }}" class="border-2 border-gray-400 rounded-md h-5 w-10">/5 -->
+                                        <p class="value__error" style="color:red">{{ $errors->first('recipe.value') }}</p>
+                                                <!-- </div> -->
+                                    </div>
+                                    <div class="mb-4 flex-grow">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2" for="content__level">
+                                            <!-- <div class='content__level'> -->
+                                            難易度
+                                        </label>
+
+                                            <select id="level" name="recipe[level]" class="border-2 border-gray-400 rounded-md p-2">
+                                                <option value="" {{ old('recipe.level', $recipe->level) == '' ? 'selected' : '' }}>選択してください</option>
+                                                <option value="1" {{ old('recipe.level', $recipe->level) == '1' ? 'selected' : '' }}>1</option>
+                                                <option value="2" {{ old('recipe.level', $recipe->level) == '2' ? 'selected' : '' }}>2</option>
+                                                <option value="3" {{ old('recipe.level', $recipe->level) == '3' ? 'selected' : '' }}>3</option>
+                                                <option value="4" {{ old('recipe.level', $recipe->level) == '4' ? 'selected' : '' }}>4</option>
+                                                <option value="5" {{ old('recipe.level', $recipe->level) == '5' ? 'selected' : '' }}>5</option>
+                                            </select>
+                                            /5
+                                        <!-- <input type='integer' name='recipe[level]' value="{{ $recipe->level }}" class="border-2 border-gray-400 rounded-md h-5 w-10">/5 -->
+                                        <p class="level__error" style="color:red">{{ $errors->first('recipe.level') }}</p>
+                                            <!-- </div> -->
+                                    </div>
                                 </div>
                                 <div class="mb-4">
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="content__ingredients">
@@ -94,31 +107,39 @@
                                              <div class="js-gray-cover hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 cursor-pointer"></div>
 
                                                 <!-- URL入力モーダル -->
-                                                <div>
-                                                    <div class="js-url-btn modal-btn cursor-pointer">URL(クリックするとURL入力のモーダルが開く)</div>
-                                                    <div class="js-url-content hidden js-modal-content max-w-md min-h-[300px] bg-white absolute top-24 mx-auto left-0 right-0 p-4 rounded-lg">
-                                                        <label for="url">URL入力</label>
-                                                        <input type="text" id="url" name="recipe[url]" value="{{ old('recipe.url', $recipe->url) }}" class="border border-gray-300 rounded w-full p-2"/>
+                                                <div class="flex w-full gap-x-1">
+                                                    <div>
+                                                        <div class="js-url-btn modal-btn px-2 py-1 bg-stone-950 text-lg text-white rounded-full hover:bg-stone-500 cursor-pointer flex-grow">URL</div>
+                                                        <div class="js-url-content hidden js-modal-content max-w-md min-h-[300px] bg-white absolute top-17 mx-auto left-0 right-0 p-4 rounded-lg">
+                                                            <label for="url">URL入力</label>
+                                                            <input type="text" id="url" name="recipe[url]" value="{{ old('recipe.url', $recipe->url) }}" class="border border-gray-300 rounded w-full p-2"/>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- 説明入力モーダル -->
+                                                    <div>
+                                                        <div class="js-explanation-btn modal-btn px-2 py-1 bg-stone-950 text-lg text-white rounded-full hover:bg-stone-500 cursor-pointer flex-grow">説明</div>
+                                                        <div class="js-explanation-content hidden js-modal-content max-w-md min-h-[300px] bg-white absolute top-24 mx-auto left-0 right-0 p-4 rounded-lg">
+                                                            <label for="description">説明入力</label>
+                                                            <!-- <input type="text" id="description" name="recipe[description]" value="{{ old('recipe.description', $recipe->description) }}" class="border border-gray-300 rounded w-full"/> -->
+                                                            <textarea id="description" name="recipe[description]" class="w-full" maxlength="1000" rows="8">{{ old('recipe.description') }}</textarea>
+                                                        </div>
+                                                    </div> 
+
+                                                    <!-- 画像選択モーダル -->
+                                                    <div>
+                                                        <div class="js-image-btn modal-btn px-2 py-1 bg-stone-950 text-lg text-white rounded-full hover:bg-stone-500 cursor-pointer flex-grow">画像</div>
+                                                        <div class="js-image-content hidden js-modal-content max-w-md min-h-[300px] bg-white absolute top-24 mx-auto left-0 right-0 p-4 rounded-lg">
+                                                            <!-- <label for="image">画像選択</label> -->
+                                                            <label><input type="file" name="recipe[images][]"></label><br>
+                                                            <label><input type="file" name="recipe[images][]"></label><br>
+                                                            <label><input type="file" name="recipe[images][]"></label><br>
+                                                            <label><input type="file" name="recipe[images][]"></label><br>
+                                                            <label><input type="file" name="recipe[images][]"></label><br>
+                                                            <!-- <input type="file" id="image" name="recipe[image]" value="{{ old('recipe.image', $recipe->image) }}" class="border border-gray-300 rounded w-full"/> -->
+                                                        </div>
                                                     </div>
                                                 </div>
-
-                                                <!-- 画像選択モーダル -->
-                                                <div>
-                                                    <div class="js-image-btn modal-btn cursor-pointer">画像(クリックすると画像入力のモーダルが開く)</div>
-                                                    <div class="js-image-content hidden js-modal-content max-w-md min-h-[300px] bg-white absolute top-24 mx-auto left-0 right-0 p-4 rounded-lg">
-                                                        <label for="image">画像選択</label>
-                                                        <input type="file" id="image" name="recipe[image]" value="{{ old('recipe.image', $recipe->image) }}" class="border border-gray-300 rounded w-full"/>
-                                                    </div>
-                                                </div>
-
-                                                <!-- 説明入力モーダル -->
-                                                <div>
-                                                    <div class="js-explanation-btn modal-btn cursor-pointer">説明(クリックすると説明入力のモーダルが開く)</div>
-                                                    <div class="js-explanation-content hidden js-modal-content max-w-md min-h-[300px] bg-white absolute top-24 mx-auto left-0 right-0 p-4 rounded-lg">
-                                                        <label for="description">説明入力</label>
-                                                        <input type="text" id="description" name="recipe[description]" value="{{ old('recipe.description', $recipe->description) }}" class="border border-gray-300 rounded w-full"/>
-                                                    </div>
-                                                </div> 
                                     </div>
                                 <div class="mb-4">
                                     <label class="block text-gray-700 text-sm font-bold mb-2" for="instructions">

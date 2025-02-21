@@ -10,7 +10,7 @@
                     <div class="flex items-center space-x-2">
                         <input type="text" wire:model="ingredient" 
                             class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 break-words"
-                            placeholder="アイテムを入力">
+                            placeholder="材料を入力">
                         <!-- wire:model="ingredient"> -->
                         <!-- wire:modelはlivewireで設定した関数名にする -->
 

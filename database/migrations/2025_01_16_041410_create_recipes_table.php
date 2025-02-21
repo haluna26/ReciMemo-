@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('url')->nullable();
             $table->string('image')->nullable();
-            $table->string('description', 5000)->nullable();
+            $table->text('description')->nullable();
         });
     }
 }
@@ -34,5 +34,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('recipes');
+        Schema::table('recipes', function (Blueprint $table) { $table->dropColumn('description'); });
     }
 };
