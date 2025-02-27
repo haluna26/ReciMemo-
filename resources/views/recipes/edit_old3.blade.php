@@ -1,12 +1,9 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('レシピ作成') }}
-        </h2>
-    </x-slot>
-    
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- フレックスボックスによる左右配置 -->
+            <div class="flex space-x-4 w-full justify-between">
+                <div class="bg-white shadow-sm sm:rounded-lg w-3/4 p-6">
                     <div class="border-b border-gray-200">
                         <div class="content">
                             <form action="{{ route('recipes.update', $recipe->id) }}" method="POST" enctype="multipart/form-data">
@@ -80,17 +77,19 @@
                                     <div class="js-gray-cover hidden fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 cursor-pointer"></div>
                                     
                                     <!-- 各モーダルボタンと既存データの表示 -->
-                                    <div class="flex space-x-1">
+                                    <div class="flex space-x-4">
                                         <!-- URL -->
                                         <div>
                                             <div class="js-url-btn modal-btn px-2 py-1 bg-stone-950 text-lg text-white rounded-full hover:bg-stone-500 cursor-pointer">
                                                 URL
                                             </div>
-                                            <!-- <div class="mt-2">
-                                                <p id="url-preview" class="{{ old('recipe.url', $recipe->url) ? 'text-gray-700' : 'text-gray-500' }}">
-                                                    {{ old('recipe.url', $recipe->url) ? old('recipe.url', $recipe->url) : '登録されたURLはありません' }}
-                                                </p>
-                                            </div> -->
+                                            <div class="mt-2">
+                                                @if(old('recipe.url', $recipe->url))
+                                                    <p class="text-gray-700">{{ old('recipe.url', $recipe->url) }}</p>
+                                                @else
+                                                    <p class="text-gray-500">登録されたURLはありません</p>
+                                                @endif
+                                            </div>
                                         </div>
                                         
                                         <!-- 説明 -->
@@ -99,9 +98,11 @@
                                                 説明
                                             </div>
                                             <div class="mt-2">
-                                                <!-- <p id="description-preview" class="{{ old('recipe.description', $recipe->description) ? 'text-gray-700' : 'text-gray-500' }}">
-                                                    {{ old('recipe.description', $recipe->description) ? old('recipe.description', $recipe->description) : '登録された説明はありません' }}
-                                                </p> -->
+                                                @if(old('recipe.description', $recipe->description))
+                                                    <p class="text-gray-700">{{ old('recipe.description', $recipe->description) }}</p>
+                                                @else
+                                                    <p class="text-gray-500">登録された説明はありません</p>
+                                                @endif
                                             </div>
                                         </div>
                                         
@@ -110,10 +111,12 @@
                                             <div class="js-image-btn modal-btn px-2 py-1 bg-stone-950 text-lg text-white rounded-full hover:bg-stone-500 cursor-pointer">
                                                 画像
                                             </div>
-                                            <!-- <div class="mt-2">
+                                            <div class="mt-2">
                                                 @php
+                                                    // $recipe->image はキャストによって配列になっている
                                                     $images = $recipe->image ?? [];
                                                 @endphp
+
                                                 @if(count($images) > 0)
                                                     <div class="grid grid-cols-2 gap-2">
                                                         @foreach($images as $image)
@@ -123,35 +126,9 @@
                                                 @else
                                                     <p class="text-gray-500">登録された画像はありません</p>
                                                 @endif
-                                            </div> -->
+                                            </div>
                                         </div>
                                     </div>
-                                    <!-- ボタンと同じ .mb-4 ブロック内、あるいはその直後に配置 -->
-                                    <div class="mt-4">
-                                            <!-- URL表示 -->
-                                            <p id="url-preview" class="{{ old('recipe.url', $recipe->url) ? 'text-gray-700' : 'text-gray-500' }}">
-                                                <a href="{{ $recipe->url }}" target="_blanck" class="text-blue-500">{{ old('recipe.url', $recipe->url) ?: '登録されたURLはありません' }}</a>
-                                            </p>
-
-                                            <!-- 説明表示 -->
-                                            <p id="description-preview" class="{{ old('recipe.description', $recipe->description) ? 'text-gray-700' : 'text-gray-500' }}">
-                                                {{ old('recipe.description', $recipe->description) ?: '登録された説明はありません' }}
-                                            </p>
-
-                                            <!-- 画像表示 -->
-                                            @php
-                                                $images = $recipe->image ?? [];
-                                            @endphp
-                                            @if (count($images) > 0)
-                                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                                    @foreach($images as $image)
-                                                        <img src="{{ asset('storage/' . $image) }}" class="w-32 h-32 object-cover rounded-md">
-                                                    @endforeach
-                                                </div>
-                                            @else
-                                                <p class="text-gray-500 mt-2">登録された画像はありません</p>
-                                            @endif
-                                        </div>
                                     
                                     <!-- URL入力モーダル -->
                                     <div class="modal-container">
@@ -210,106 +187,63 @@
                             
                             <!-- モーダル用スクリプト -->
                             <script>
-                                document.addEventListener("DOMContentLoaded", () => {
-                                    const modalBg = document.querySelector(".js-gray-cover");
-                                    const modals = document.querySelectorAll(".js-modal-content");
-                                    
-                                    // 全モーダルを閉じる関数
-                                    function closeModal() {
-                                        modalBg.classList.add("hidden");
-                                        modals.forEach(modal => modal.classList.add("hidden"));
-                                    }
-                                    
-                                    // 背景クリックで閉じる
-                                    modalBg.addEventListener("click", closeModal);
-                                    
-                                    // モーダル内クリックで背景への伝播を防止
-                                    modals.forEach(modal => {
-                                        modal.addEventListener("click", (e) => e.stopPropagation());
+                                // モーダル要素のキャッシュ
+                                const modalContent = document.querySelectorAll(".js-modal-content");
+                                const modalOpenedBackGround = document.querySelector(".js-gray-cover");
+
+                                // すべてのモーダルを閉じる関数
+                                function closeModal() {
+                                    modalOpenedBackGround.classList.add("hidden");
+                                    modalContent.forEach((modal) => {
+                                        modal.classList.add("hidden");
                                     });
-                                    
-                                    // クローズボタンにイベントを追加
-                                    document.querySelectorAll('.close-modal').forEach(btn => {
-                                        btn.addEventListener("click", closeModal);
+                                }
+
+                                // バックグラウンドクリックでモーダルを閉じる
+                                modalOpenedBackGround.addEventListener("click", closeModal);
+
+                                // モーダル内のクリックがバックグラウンドに伝播しないようにする
+                                modalContent.forEach((modal) => {
+                                    modal.addEventListener("click", (e) => {
+                                        e.stopPropagation();
                                     });
-                                    
-                                    // モーダルのトグル関数
-                                    function toggleModal(modal, show = true) {
-                                        if (!modal) return;
-                                        modal.classList.toggle("hidden", !show);
-                                        modalBg.classList.toggle("hidden", !show);
-                                    }
-                                    
-                                    // モーダル開閉用ボタン設定
-                                    function setupModalToggle(buttonSelector, modalSelector) {
-                                        const btn = document.querySelector(buttonSelector);
-                                        const modal = document.querySelector(modalSelector);
-                                        if (btn && modal) {
-                                            btn.addEventListener("click", () => {
-                                                modalBg.classList.remove("hidden");
-                                                modal.classList.remove("hidden");
-                                            });
-                                        }
-                                    }
-                                    
-                                    setupModalToggle('.js-url-btn', '.js-url-content');
-                                    setupModalToggle('.js-explanation-btn', '#descriptionModal');
-                                    setupModalToggle('.js-image-btn', '.js-image-content');
-                                    
-                                    // 追加ボタンのイベント登録：URL
-                                    const addUrlBtn = document.getElementById("add-url-id");
-                                    if (addUrlBtn) {
-                                        addUrlBtn.addEventListener("click", () => {
-                                            // 入力値を取得してプレビュー更新
-                                            const urlInput = document.getElementById("url");
-                                            const newUrl = urlInput.value.trim();
-                                            const urlPreview = document.getElementById("url-preview");
-                                            if(urlPreview) {
-                                                if(newUrl) {
-                                                    urlPreview.textContent = newUrl;
-                                                    urlPreview.className = "text-gray-700";
-                                                } else {
-                                                    urlPreview.textContent = "登録されたURLはありません";
-                                                    urlPreview.className = "text-gray-500";
-                                                }
-                                            }
-                                            toggleModal(document.querySelector(".js-url-content"), false);
-                                        });
-                                    }
-                                    
-                                    // 追加ボタンのイベント登録：説明
-                                    const addInstrBtn = document.getElementById("add-instructions-id");
-                                    if (addInstrBtn) {
-                                        addInstrBtn.addEventListener("click", () => {
-                                            const descInput = document.getElementById("recipe_description_input");
-                                            const newDesc = descInput.value.trim();
-                                            const descPreview = document.getElementById("description-preview");
-                                            if(descPreview) {
-                                                if(newDesc) {
-                                                    descPreview.textContent = newDesc;
-                                                    descPreview.className = "text-gray-700";
-                                                } else {
-                                                    descPreview.textContent = "登録された説明はありません";
-                                                    descPreview.className = "text-gray-500";
-                                                }
-                                            }
-                                            toggleModal(document.querySelector("#descriptionModal"), false);
-                                        });
-                                    }
-                                    
-                                    // 追加ボタンのイベント登録：画像
-                                    const addImagesBtn = document.getElementById("add-images-id");
-                                    if (addImagesBtn) {
-                                        addImagesBtn.addEventListener("click", () => {
-                                            // ※画像はモーダル内でファイル選択しているので、追加処理はサーバー側に任せるか、もしくはプレビュー更新などを別途実装
-                                            toggleModal(document.querySelector(".js-image-content"), false);
-                                        });
-                                    }
                                 });
+
+                                // クローズボタンにイベントリスナーを追加
+                                document.querySelectorAll('.close-modal').forEach((btn) => {
+                                    btn.addEventListener('click', closeModal);
+                                });
+
+                                // モーダルのトグルを設定する汎用関数
+                                const setupModalToggle = (buttonSelector, modalSelector) => {
+                                    const button = document.querySelector(buttonSelector);
+                                    const modal = document.querySelector(modalSelector);
+                                    if (button && modal) {
+                                        button.addEventListener("click", () => {
+                                            modalOpenedBackGround.classList.remove("hidden");
+                                            modal.classList.remove("hidden");
+                                        });
+                                    } else {
+                                        console.log("エラー: ボタンまたはモーダルが見つかりません");
+                                    }
+                                };
+
+                                // URL、画像、説明用モーダルのトグル設定
+                                setupModalToggle('.js-url-btn', '.js-url-content');
+                                setupModalToggle('.js-image-btn', '.js-image-content');
+                                setupModalToggle('.js-explanation-btn', '.js-explanation-content');
                             </script>
                         </div>    
                     </div>
-                
+                </div>
+
+                <div class="bg-white shadow-sm sm:rounded-lg w-1/4">
+                    <div class="p-6">
+                        <livewire:shopping-cart />
+                    </div>
+                </div> 
+               
+            </div>
         </div>
     </div>
 </x-app-layout>

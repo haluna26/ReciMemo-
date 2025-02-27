@@ -24,5 +24,4 @@
             </div>
         </div>
     </div>
-    @livewireScripts
 </x-app-layout>

@@ -9,28 +9,29 @@
                     </h1>
                     <div class="content">
                         <div class="content__category">
-                            <h3>カテゴリー</h3>
+                            <h3 class="bg-amber-500 text-white font-bold font-['BIZ_UDGothic'] px-2 py-1 rounded-lg inline-block">カテゴリー</h3>
                             <p>{{ $recipe->category->name }}</p>
                         </div>
                         <div class="content__estimation">
-                            <h3>評価</h3>
+                            <h3 class="bg-amber-500 text-white font-bold font-['BIZ_UDGothic'] px-2 py-1 rounded-lg inline-block">評価</h3>
                             <p>満足度：{{ $recipe->value }}/5　難易度：{{ $recipe->level }}/5</p>
                         </div>
                         <div class="content__food">
-                            <h3>材料</h3>
+                            <h3 class="bg-amber-500 text-white font-bold font-['BIZ_UDGothic'] px-2 py-1 rounded-lg inline-block">材料</h3>
                             <p>{{ $recipe->ingredients }}</p>
                         </div>
                         <div class="content__method">
-                            <h3>つくり方</h3>
+                            <h3 class="bg-amber-500 text-white font-bold font-['BIZ_UDGothic'] px-2 py-1 rounded-lg inline-block">つくり方</h3>
                             <!-- urlが青くなる仕組み -->
-                            <a href="{{ $recipe->url }}" class="text-blue-500">{{ $recipe->url }}</a> 
+                            <p>
+                            <a href="{{ $recipe->url }}" target="_blank" class="text-blue-500">{{ $recipe->url }}</a> 
+                            </p>
 
-                            @if (!empty($recipe->image) && json_decode($recipe->image))
+                            
+                            @if (!empty($recipe->image) && is_array($recipe->image))
                                 <div class="grid grid-cols-2 gap-2">
-                                    @foreach (json_decode($recipe->image) as $image)
-                                        <img src="{{ asset('storage/' . $image) }}" alt="レシピ画像" 
-                                            class="w-full h-48 object-cover rounded-md cuser-pointer"
-                                            onclick="openModal('{{ asset('storage/' . $image) }}')">
+                                    @foreach ($recipe->image as $image)
+                                        <img src="{{ asset('storage/' . $image) }}" alt="レシピ画像" onclick="openModal(this.src)" class="cursor-pointer">
                                     @endforeach
                                 </div>
                             @endif
@@ -50,40 +51,47 @@
                             <p>{{ $recipe->description }}</p>
                         </div>
                         <div class="content__memo">
-                            <h3>メモ</h3>
+                            <h3 class="bg-amber-500 text-white font-bold font-['BIZ_UDGothic'] px-2 py-1 rounded-lg inline-block">メモ</h3>
                             <p>{{ $recipe->instructions }}</p>
                         </div>
                     </div>
-                    <form action="/recipes/{{ $recipe->id }}" id="form_{{ $recipe->id }}" method="post">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class= "bg-red-700 font-semibold text-white py-1 px-2 rounded" onclick="deletePost({{ $recipe->id }})">削除</button>
-                    </form>
-                    <script>
-                    // JavaScript
-                    function openModal(imageSrc) {
-                    const modal = document.getElementById('imageModal');
-                    const modalImage = document.getElementById('modalImage');
 
-                    modalImage.src = imageSrc;
-                    modal.classList.remove('hidden');
-                    }
+                    <div class="flex space-x-2 items-center">
+                        <a href="/recipes/{{ $recipe->id }}/edit" class="edit bg-green-400 text-white font-bold rounded px-2 py-1 inline-block text-center cursor-pointer hover:bg-green-500 border border-green-700">
+                            編集
+                        </a>
+                       
+                        
+                            <form action="/recipes/{{ $recipe->id }}" id="form_{{ $recipe->id }}" method="post">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class= "bg-red-700 font-semibold text-white py-1 px-2 rounded" onclick="deletePost({{ $recipe->id }})">削除</button>
+                            </form>
+                            <script>
+                            // JavaScript
+                            function openModal(imageSrc) {
+                            const modal = document.getElementById('imageModal');
+                            const modalImage = document.getElementById('modalImage');
 
-                    function closeModal() {
-                        document.getElementById('imageModal').classList.add('hidden');
-                    }
+                            modalImage.src = imageSrc;
+                            modal.classList.remove('hidden');
+                            }
 
-                    function deletePost(id) {
-                        'use strict'
+                            function closeModal() {
+                                document.getElementById('imageModal').classList.add('hidden');
+                            }
 
-                    if (confirm('削除すると復元できません。\n本当に削除しますか？')) {
-                        document.getElementById(`form_${id}`).submit();
-                        }
-                    }
-                    </script>
-                    <!-- <div class="edit bg-green-700 font-semibold text-white py-2 px-4 rounded"><a href="/recipes/{{ $recipe->id }}/edit">編集</a></div> -->
-                    <div class="edit bg-green-400 text-white font-bold rounded px-2 py-1 inline-block text-center cursor-pointer hover:bg-green-500 border border-green-700"
-                role="button" onclick="handleEdit()"><a href="/recipes/{{ $recipe->id }}/edit">編集</a></div>
+                            function deletePost(id) {
+                                'use strict'
+
+                            if (confirm('削除すると復元できません。\n本当に削除しますか？')) {
+                                document.getElementById(`form_${id}`).submit();
+                                }
+                            }
+                            </script>
+                        
+                        <!-- <div class="edit bg-green-700 font-semibold text-white py-2 px-4 rounded"><a href="/recipes/{{ $recipe->id }}/edit">編集</a></div> -->
+                    </div>
 
                     <div class="footer">
                         <a href="/recipes">戻る</a>
@@ -97,5 +105,4 @@
             </div>
         </div>
 </div>
-@livewireScripts
 </x-app-layout>

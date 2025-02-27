@@ -42,133 +42,52 @@ class RecipeController extends Controller
         return view('recipes.create')->with(['categories' => $category->get()]);
     }
 
-    // public function create(Request $request)
-    // {
-    //     return view('recipes.create');
-    //     // return redirect('/recipes');
-    // }
+    
 
-    // セッションにデータを一時保存
     public function store(Request $request)
     {
-    
     $validated = $request->validate([
-        'recipe.title' => 'required|string|max:255',
+        'recipe.title'       => 'required|string|max:255',
         'recipe.ingredients' => 'required|string',
-        'recipe.value' => 'nullable|integer|min:1|max:5',
-        'recipe.level' => 'nullable|integer|min:1|max:5',
+        'recipe.value'       => 'nullable|integer|min:1|max:5',
+        'recipe.level'       => 'nullable|integer|min:1|max:5',
         'recipe.description' => 'nullable|string|max:1000',
-        'recipe.images.*' => 'nullable|image|max:2048', // ”一枚あたり”2MBまで
-        'new_category' => 'nullable|string|max:255',
+        'recipe.instructions'=> 'nullable|string|max:1000',
+        'recipe.url'         => 'nullable|url',  // バリデーション済み
+        'recipe.images.*'    => 'nullable|image|max:2048',
+        'new_category'       => 'nullable|string|max:255',
+        'recipe.category_id' => 'required|integer|exists:categories,id'
     ]);
 
-    // 画像のデータをセッションに格納（画像は一時的に保存しない）
+    // 画像の保存
+    $imagePaths = [];
     if ($request->hasFile('recipe.images')) {
-        $imagePaths = [];
         foreach ($request->file('recipe.images') as $image) {
-            $path = $image->store('images', 'public'); // storage/app/public/imagesに保存
+            $path = $image->store('images', 'public'); 
             $imagePaths[] = $path;
         }
-        session(['recipe.images' => $imagePaths]);
-    }
-    // $data = $request->all();
-    // $data['recipe']['title'] = $validated['recipe']['title'];
-    // $data['recipe']['ingredients'] = $validated['recipe']['ingredients'];
-    // $data['recipe']['user_id'] = Auth::id(); // ユーザーIDを追加
-
-    // $categoryId = $request->input('recipe.category_id');// 既存のカテゴリーIDを取得
-
-    
-    // データベースに保存
-    // $recipe = new Recipe();
-    // $recipe->fill($data['recipe']);
-    // $recipe->category_id = $categoryId;
-
-    //　画像の保存処理
-    // $imagePaths = []; // 画像のパスを保存する配列
-    // if ($request->hasFile('recipe.images')) {
-    //     foreach ($request->file('recipe.images') as $image) {
-    //         $path = $image->store('images', 'public'); // storage/app/public/imagesに保存
-    //         $imagePaths[] = $path;
-    //     }
-    // }
-        
-    //     $recipe->image = !empty($imagePaths) ? json_encode($imagePaths) : json_encode([]);
-    //     $recipe->save();
-    
-    // return redirect()->route('recipes.index')->with('success', 'レシピが作成されました！');
-
-    // フォームデータをセッションに保存
-    session([
-        'recipe.title' => $validated['recipe']['title'],
-        'recipe.ingredients' => $validated['recipe']['ingredients'],
-        'recipe.value' => $validated['recipe']['value'],
-        'recipe.level' => $validated['recipe']['level'],
-        'recipe.description' => $validated['recipe']['description'],
-        'new_category' => $validated['new_category'],
-    ]);
-    dd(session()->all()); 
-
-    // 入力されたデータをセッションに保存
-    session()->put('recipe', $request->input('recipe'));
-
-    // フォームの内容をセッションに一時保存
-    session()->put('recipe.description', $request->input('recipe.description'));
-
-
-    // セッションに保存したデータをフォームに戻して表示（必要なら）
-    return redirect()->route('recipes.create');
     }
 
-    // 保存ボタンが押された時に、セッションからデータをデータベースに保存
-    public function storeFinal(Request $request)
-    {
-        // セッションからデータを取得
-        $data = session()->get('recipe');
-
-        if (!$data) {
-            return redirect()->route('recipes.create')->with('error', 'レシピデータが一時保存されていません。');
-        }
-
-        $validated = $request->validate([
-            'recipe.title' => 'required|string|max:255',
-            'recipe.ingredients' => 'required|string',
-            'recipe.value' => 'nullable|integer|min:1|max:5',
-            'recipe.level' => 'nullable|integer|min:1|max:5',
-            'recipe.description' => 'nullable|string|max:1000',
-            'recipe.images.*' => 'nullable|image|max:2048', // ”一枚あたり”2MBまで
-        ]);
-
-        // データベースに保存
-        $recipe = new Recipe();
-        $recipe->title = $data['title'];
-        $recipe->ingredients = $data['ingredients'];
-        $recipe->value = $data['value'];
-        $recipe->level = $data['level'];
-        $recipe->description = session('recipe.description', ''); // 説明はセッションから取得
-        $recipe->user_id = Auth::id(); // ユーザIDを取得
-        $recipe->category_id = $request->input('recipe.category_id');
-
-        // 画像を保存
-        if ($request->hasFile('recipe.images')) {
-            $imagePaths = [];
-            foreach ($request->file('recipe.images') as $image) {
-                $path = $image->store('images', 'public'); // storage/app/public/imagesに保存
-                $imagePaths[] = $path;
-            }
-            $recipe->image = json_encode($imagePaths);
-    } else {
-        // セッションに保存されている画像があれば使用
-        $recipe->image = json_encode(session('recipe.images', []));
-    }
-
+    // レシピデータをデータベースに保存
+    $recipe = new Recipe();
+    $recipe->title        = $validated['recipe']['title'];
+    $recipe->ingredients  = $validated['recipe']['ingredients'];
+    $recipe->value        = $validated['recipe']['value'] ?? null;
+    $recipe->level        = $validated['recipe']['level'] ?? null;
+    $recipe->description  = $validated['recipe']['description'] ?? '';
+    $recipe->instructions = $validated['recipe']['instructions'] ?? '';
+    $recipe->url          = $validated['recipe']['url'] ?? null;  // ★ URL を代入
+    $recipe->user_id      = Auth::id(); 
+    $recipe->category_id  = $validated['recipe']['category_id'];
+    $recipe->image        = $imagePaths;
     $recipe->save();
 
-    // セッションのレシピデータを削除
     session()->forget('recipe');
 
-    return redirect()->route('recipes.index')->with('success', 'レシピが作成されました！');
+    return redirect()->route('recipes.index')->with('success', 'レシピが作成されました。');
     }
+
+    
 
     public function show(Recipe $recipe)
     {
@@ -188,46 +107,51 @@ class RecipeController extends Controller
 
     public function update(Request $request, $id)
     {
-        //バーリデーション
-        $validated = $request->validate([
-            'recipe.title' => 'required|string|max:255',
-            'recipe.ingredients' => 'required|string',
-            'recipe.description' => 'nullable|string|max:1000',
-            'new_category' => 'nullable|string|max:255'
-        ]);
-        $data = $request->all();
-        $data['recipe']['title'] = $validated['recipe']['title'];
-        $data['recipe']['ingredients'] = $validated['recipe']['ingredients'];
-        $data['recipe']['user_id'] = Auth::id(); // ユーザーIDを追加
+    // バリデーションルールに instructions を追加
+    $validated = $request->validate([
+        'recipe.title'        => 'required|string|max:255',
+        'recipe.ingredients'  => 'required|string',
+        'recipe.description'  => 'nullable|string|max:1000',
+        'recipe.instructions' => 'nullable|string|max:1000', // ★ 追加
+        'recipe.value'        => 'nullable|integer|min:1|max:5',
+        'recipe.level'        => 'nullable|integer|min:1|max:5',
+        'recipe.category_id'  => 'required|integer|exists:categories,id',
+        'recipe.url'       => 'nullable|url', // 必要なら
+        'new_category'        => 'nullable|string|max:255'
+    ]);
 
-        $categoryId = $request->input('recipe.category_id');
-        
-        $recipe = Recipe::findOrFail($id);
+    // レシピの取得
+    $recipe = Recipe::findOrFail($id);
 
-        $recipe->fill($data['recipe']);
-        // $recipe->fill([
-        //     'recipe.title' => 'required|string|max:255',
-        //     'recipe.ingredients' => 'required|string',
-        //     'recipe.user_id' => Auth::id(), // ユーザーIDを更新
-        // ]);
-        $recipe->category_id = $categoryId;
+    // 新規カテゴリーの処理（必要なら）
+    if (!empty($validated['new_category'])) {
+        $newCategory = Category::create(['name' => $validated['new_category']]);
+        $validated['recipe']['category_id'] = $newCategory->id;
+    }
 
-        //　画像の保存処理
-        $imagePaths = []; // 画像のパスを保存する配列
-        if ($request->hasFile('recipe.images')) {
-            foreach ($request->file('recipe.images') as $image) {
-                $path = $image->store('images', 'public'); // storage/app/public/imagesに保存
-                $imagePaths[] = $path;
-            }
+    // バリデーション済みデータをモデルに反映（instructions も含む）
+    $recipe->fill($validated['recipe']);
+
+    // ユーザーIDの更新（必要なら）
+    $recipe->user_id = Auth::id();
+
+    // 画像の保存処理
+    $imagePaths = [];
+    if ($request->hasFile('recipe.images')) {
+        foreach ($request->file('recipe.images') as $image) {
+            $path = $image->store('images', 'public');
+            $imagePaths[] = $path;
         }
-        $recipe->image = !empty($imagePaths) ? json_encode($imagePaths) : json_encode([]);
+    }
+    // 画像がアップロードされていれば更新
+    if (!empty($imagePaths)) {
+        $recipe->image = $imagePaths; // キャストを使っている場合は配列のまま代入OK
+    }
 
-        $recipe->save(); //レシピを更新
-        //update() メソッドを使うことで一度にバリデーション済みのデータを保存することができます
-        // $recipe->fill($input_recipe)->save();
+    // DBに保存
+    $recipe->save();
 
-        // return redirect('/recipes/' . $recipe->id);
-        return redirect()->route('recipes.index')->with('success', 'レシピが更新されました');
+    return redirect()->route('recipes.index')->with('success', 'レシピが更新されました');
     }
 
     public function delete(Recipe $recipe)

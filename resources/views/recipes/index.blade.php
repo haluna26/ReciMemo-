@@ -23,10 +23,16 @@
                     @if($recipes->count())
                         @foreach($recipes as $recipe)
                             <div class="p-4 border-b">
-                                <h2 class="title">
-                                    <a href="/recipes/{{ $recipe->id }}">{{ $recipe->title }}</a>
-                                </h2>
-                                <p>満足度:{{ $recipe->value }}/5, 難易度:{{ $recipe->level }}/5</p>
+                                    <h2 class="title">
+                                        <a href="/recipes/{{ $recipe->id }}">{{ $recipe->title }}</a>
+                                    </h2>
+                                
+                                <div class="flex space-x-1 items-center">
+                                    <span class="bg-gray-300 text-black px-2 py-1 rounded-md inline-block flex-none text-base">
+                                        {{ $recipe->category->name }}
+                                    </span>
+                                    <span>満足度:{{ $recipe->value }}/5, 難易度:{{ $recipe->level }}/5</span>
+                                </div>
                                 <p class="text-gray-600">{{ $recipe->ingredients }}</p>
                             </div>
                         @endforeach
@@ -60,5 +66,4 @@
         </div>
     </div>
 </div>
-@livewireScripts
 </x-app-layout>
