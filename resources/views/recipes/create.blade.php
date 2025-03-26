@@ -138,8 +138,10 @@
                                     <div class="modal-container">
                                         <div class="js-image-content js-modal-content fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden">
                                             <div class="bg-white p-6 rounded-lg max-w-md w-full">
-                                                <label for="image">画像選択</label>
-                                                <input type="file" id="image-upload" name="recipe[images][]" multiple class="border border-gray-300 rounded w-full"/>
+                                                <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                                                    画像アップロード
+                                                </label>
+                                                <input type="file" id="image-upload" name="recipe[images][]" multiple accept="image/*" class="border border-gray-300 rounded w-full p-2"/>
                                                 <div class="flex gap-2 mt-2">
                                                     <button type="button" id="add-images-id" class="bg-blue-500 text-white px-4 py-2 rounded">追加</button>
                                                     <button type="button" onclick="toggleModal(document.querySelector('.js-image-content'), false)" class="bg-gray-500 text-white px-4 py-2 rounded">閉じる</button>
@@ -155,7 +157,9 @@
                                         <p class="text-gray-700">前回選択した画像：</p>
                                         <div class="grid grid-cols-2 gap-2">
                                             @foreach (session('uploaded_images') as $image)
-                                                <img src="{{ asset('storage/' . $image) }}" class="w-32 h-32 object-cover rounded-md">
+                                                <div class="relative">
+                                                    <img src="{{ $image }}" class="w-32 h-32 object-cover rounded-md">
+                                                </div>
                                             @endforeach
                                         </div>
                                     </div>
@@ -339,6 +343,19 @@
             sessionStorage.removeItem("recipeData");
             updateDisplay();
         }
+
+        document.getElementById("image-upload").addEventListener("change", function(event) {
+            const files = event.target.files;
+            const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+            for (let i = 0; i < files.length; i++) {
+                if (!allowedTypes.includes(files[i].type)) {
+                    alert("画像ファイル（JPG, PNG, GIF, WebP)のみ選択できます。");
+                    event.target.value = ""; //　不正ファイルをクリア
+                    return;
+                }
+            }
+        });
     });
     </script>
 </x-app-layout>
