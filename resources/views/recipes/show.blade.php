@@ -28,10 +28,23 @@
                             </p>
 
                             
-                            @if (!empty($recipe->image) && is_array($recipe->image))
+                            <!-- @if (!empty($recipe->image) && is_array($recipe->image))
                                 <div class="grid grid-cols-2 gap-2">
                                     @foreach ($recipe->image as $image)
                                         <img src="{{ asset('storage/' . $image) }}" alt="レシピ画像" onclick="openModal(this.src)" class="cursor-pointer">
+                                    @endforeach
+                                </div>
+                            "{{ asset('storage/' . $image) }}"はローカルストレージ用
+                            @endif -->
+
+                            @php
+                                $images = json_decode($recipe->image, true);
+                            @endphp
+
+                            @if (!empty($images) && is_array($images))
+                                <div class="grid grid-cols-2 gap-2">
+                                    @foreach ($images as $image)
+                                        <img src="{{ $image }}" alt="レシピ画像" onclick="openModal(this.src)" class="cursor-pointer">
                                     @endforeach
                                 </div>
                             @endif

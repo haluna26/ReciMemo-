@@ -10,6 +10,8 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+
 class RecipeController extends Controller
 {
     public function index(Request $request)
@@ -60,11 +62,13 @@ class RecipeController extends Controller
     ]);
 
     // 画像の保存
-    $imagePaths = [];
+    $imageUrls = [];
     if ($request->hasFile('recipe.images')) {
         foreach ($request->file('recipe.images') as $image) {
-            $path = $image->store('images', 'public'); 
-            $imagePaths[] = $path;
+            $uploadedFileUrl = Cloudinary::upload($image->getRealPath())->getSecurePath();
+            $imageUrls[] = $uploadedFileUrl;
+            // $path = $image->store('images', 'public'); 
+            // $imagePaths[] = $path;
         }
     }
 
@@ -79,7 +83,8 @@ class RecipeController extends Controller
     $recipe->url          = $validated['recipe']['url'] ?? null;  // ★ URL を代入
     $recipe->user_id      = Auth::id(); 
     $recipe->category_id  = $validated['recipe']['category_id'];
-    $recipe->image        = $imagePaths;
+    // $recipe->image        = $imagePaths;
+    $recipe->image        =json_encode($imageUrls); // Cloudinaryの画像URLを保存
     $recipe->save();
 
     session()->forget('recipe');
@@ -117,7 +122,8 @@ class RecipeController extends Controller
         'recipe.level'        => 'nullable|integer|min:1|max:5',
         'recipe.category_id'  => 'required|integer|exists:categories,id',
         'recipe.url'       => 'nullable|url', // 必要なら
-        'new_category'        => 'nullable|string|max:255'
+        'new_category'        => 'nullable|string|max:255',
+        'recipe.images.*'     => 'nullable|image|max:2048'
     ]);
 
     // レシピの取得
@@ -135,18 +141,25 @@ class RecipeController extends Controller
     // ユーザーIDの更新（必要なら）
     $recipe->user_id = Auth::id();
 
+    // 既存の画像を取得
+    $existingImages = json_decode($recipe->image, true) ?? [];
+
     // 画像の保存処理
-    $imagePaths = [];
     if ($request->hasFile('recipe.images')) {
         foreach ($request->file('recipe.images') as $image) {
-            $path = $image->store('images', 'public');
-            $imagePaths[] = $path;
+            $uploadedFileUrl = Cloudinary::upload($image->getRealPath())->getSecurePath();
+            $existingImages[] = $uploadedFileUrl; // 既存の画像リストに追加
+            // $path = $image->store('images', 'public');
+            // $imagePaths[] = $path;
         }
     }
     // 画像がアップロードされていれば更新
-    if (!empty($imagePaths)) {
-        $recipe->image = $imagePaths; // キャストを使っている場合は配列のまま代入OK
-    }
+    // if (!empty($imagePaths)) {
+    //     $recipe->image = $imagePaths; // キャストを使っている場合は配列のまま代入OK
+    // }
+
+    // 画像をJSON形式で保存
+    $recipe->image = json_encode($existingImages);
 
     // DBに保存
     $recipe->save();

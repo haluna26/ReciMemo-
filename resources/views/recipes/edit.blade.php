@@ -110,27 +110,21 @@
                                             <div class="js-image-btn modal-btn px-2 py-1 bg-stone-950 text-lg text-white rounded-full hover:bg-stone-500 cursor-pointer">
                                                 画像
                                             </div>
-                                            <!-- <div class="mt-2">
-                                                @php
-                                                    $images = $recipe->image ?? [];
-                                                @endphp
-                                                @if(count($images) > 0)
-                                                    <div class="grid grid-cols-2 gap-2">
-                                                        @foreach($images as $image)
-                                                            <img src="{{ asset('storage/' . $image) }}" class="w-32 h-32 object-cover rounded-md">
-                                                        @endforeach
-                                                    </div>
-                                                @else
-                                                    <p class="text-gray-500">登録された画像はありません</p>
-                                                @endif
-                                            </div> -->
                                         </div>
+                                        
                                     </div>
                                     <!-- ボタンと同じ .mb-4 ブロック内、あるいはその直後に配置 -->
-                                    <div class="mt-4">
+                                        <div class="mt-4">
                                             <!-- URL表示 -->
                                             <p id="url-preview" class="{{ old('recipe.url', $recipe->url) ? 'text-gray-700' : 'text-gray-500' }}">
-                                                <a href="{{ $recipe->url }}" target="_blanck" class="text-blue-500">{{ old('recipe.url', $recipe->url) ?: '登録されたURLはありません' }}</a>
+                                                <!-- <a href="{{ $recipe->url }}" target="_blanck" class="text-blue-500">{{ old('recipe.url', $recipe->url) ?: '登録されたURLはありません' }}</a> -->
+                                                 @if(old('recipe.url', $recipe->url))
+                                                    <a href="{{ old('recipe.url', $recipe->url) }}" target="_blank" class="text-blue-500">
+                                                        {{ old('recipe.url', $recipe->url) }}
+                                                    </a>
+                                                @else
+                                                    登録されたURLはありません
+                                                @endif
                                             </p>
 
                                             <!-- 説明表示 -->
@@ -139,18 +133,22 @@
                                             </p>
 
                                             <!-- 画像表示 -->
-                                            @php
-                                                $images = $recipe->image ?? [];
-                                            @endphp
-                                            @if (count($images) > 0)
-                                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                                    @foreach($images as $image)
-                                                        <img src="{{ asset('storage/' . $image) }}" class="w-32 h-32 object-cover rounded-md">
-                                                    @endforeach
-                                                </div>
-                                            @else
-                                                <p class="text-gray-500 mt-2">登録された画像はありません</p>
-                                            @endif
+                                            <div id="image-preview" class="grid grid-cols-2 gap-1 mt-2">
+                                                @php
+                                                    $images = json_decode($recipe->image, true) ?? [];
+                                                @endphp
+                                            
+                                                @if (!empty($images) && is_array($images))
+                                                    <div class="grid grid-cols-2 gap-2 mt-2">
+                                                        @foreach($images as $image)
+                                                            <div class="relative">
+                                                                <img src="{{ $image }}" class="w-32 h-32 object-cover rounded-md">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <p class="text-gray-500 mt-2">登録された画像はありません</p>
+                                                @endif
                                         </div>
                                     
                                     <!-- URL入力モーダル -->
@@ -187,10 +185,12 @@
                                     <div class="modal-container">
                                         <div class="js-image-content js-modal-content fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden">
                                             <div class="bg-white p-6 rounded-lg max-w-md w-full">
-                                                <label for="image">画像選択</label>
-                                                <input type="file" id="image-upload" name="recipe[images][]" multiple class="border border-gray-300 rounded w-full"/>
+                                                <label class="block text-gray-700 text-sm font-bold mb-2" for="image">
+                                                    画像選択
+                                                </label>
+                                                <input type="file" id="image-upload" name="recipe[images][]" multiple accept="image/*" class="border border-gray-300 rounded w-full p-2"/>
                                                 <div class="flex gap-2 mt-2">
-                                                    <button type="button" id="add-images-id" class="bg-blue-500 text-white px-4 py-2 rounded">追加</button>
+                                                    <button type="button" id="add-images-id" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">追加</button>
                                                     <button type="button" class="close-modal bg-gray-500 text-white px-4 py-2 rounded">閉じる</button>
                                                 </div>
                                             </div>
@@ -305,6 +305,19 @@
                                             toggleModal(document.querySelector(".js-image-content"), false);
                                         });
                                     }
+
+                                    document.getElementById("image-upload").addEventListener("change", function(event) {
+                                        const files = event.target.files;
+                                        const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+                                        for (let i = 0; i < files.length; i++) {
+                                            if (!allowedTypes.includes(files[i].type)) {
+                                                alert("画像ファイル（JPG, PNG, GIF, WebP)のみ選択できます。");
+                                                event.target.value = ""; //　不正ファイルをクリア
+                                                return;
+                                            }
+                                        }
+                                    });
                                 });
                             </script>
                         </div>    
