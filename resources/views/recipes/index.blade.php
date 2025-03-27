@@ -12,7 +12,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <!-- 検索フォーム -->
                     <form action="{{ route('recipes.index') }}" method="GET">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="レシピを検索" class="border-2 border-gray-300 p-2 rounded-md">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="レシピを検索" class="border-2 border-gray-300 p-2 rounded-md" autocomplete="off">
                         <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded-md">検索</button>
                     </form>
                     @if (!empty($search))

@@ -16,7 +16,8 @@ class RecipeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Recipe::query(); // レシピモデルのクエリビルダーを作成
+        // $query = Recipe::query(); // レシピモデルのクエリビルダーを作成
+        $query = Recipe::where('user_id', Auth::id()); // 👈 ログインユーザーのレシピのみ取得
 
         //　検索フォームからのキーワード取得
         $search = $request->input('search');
@@ -31,23 +32,27 @@ class RecipeController extends Controller
         // 新しい順（created_atの降順）で取得
         $recipes = $query->orderBy('created_at', 'desc')->paginate(5);
 
-        // $recipe = Recipe::all();
-        // $recipes = Recipe::paginate(5); // 1ページに表示するアイテム数
         return view('recipes.index', compact('recipes', 'search'));
-        // return view('recipes.index', ['recipes' => $recipe]); 
-        // return $recipe->get();
     }
 
     // categoryの選択が可能になる create()は一つのみ
     public function create(Category $category)
     {
-        return view('recipes.create')->with(['categories' => $category->get()]);
+
+        // ユーザーごとの入力履歴を取得
+        $previousInput = session()->get('recipe_input_' . Auth::id(), []);
+
+        return view('recipes.create')->with([
+            'categories' => $category->get(),
+            'previousInput' => $previousInput
+        ]);
     }
 
     
 
     public function store(Request $request)
     {
+
     $validated = $request->validate([
         'recipe.title'       => 'required|string|max:255',
         'recipe.ingredients' => 'required|string',
@@ -60,6 +65,9 @@ class RecipeController extends Controller
         'new_category'       => 'nullable|string|max:255',
         'recipe.category_id' => 'required|integer|exists:categories,id'
     ]);
+    
+    // セッションに保存（ログインユーザーごとに管理）
+    session()->put('recipe_input_' . Auth::id(), $validated['recipe']);
 
     // 画像の保存
     $imageUrls = [];
@@ -71,6 +79,7 @@ class RecipeController extends Controller
             // $imagePaths[] = $path;
         }
     }
+
 
     // レシピデータをデータベースに保存
     $recipe = new Recipe();
@@ -87,7 +96,7 @@ class RecipeController extends Controller
     $recipe->image        =json_encode($imageUrls); // Cloudinaryの画像URLを保存
     $recipe->save();
 
-    session()->forget('recipe');
+    // session()->forget('recipe');
 
     return redirect()->route('recipes.index')->with('success', 'レシピが作成されました。');
     }
@@ -96,17 +105,29 @@ class RecipeController extends Controller
 
     public function show(Recipe $recipe)
     {
+        // 👇 他のユーザーのレシピを見れないようにする
+        if ($recipe->user_id !== Auth::id()) {
+            abort(403, 'このレシピにアクセスする権限がありません。');
+        }
+
         $category = $recipe->category; // リレーションを利用してカテゴリーを取得
+
         return view('recipes.show', compact('recipe', 'category'));
 
     }
 
     public function edit($id)
     {
-        $recipe = Recipe::findOrFail($id);
+        // $recipe = Recipe::findOrFail($id);
+        $recipe = Recipe::where('id', $id)->where('user_id', Auth::id())->firstOrFail(); // 👈 自分のレシピのみ取得
+
         $categories = Category::all(); // 既存のカテゴリを取得
 
-        return view('recipes.edit', compact('recipe', 'categories'));
+        // ユーザーごとの入力履歴を取得（編集ページ用）
+        $previousInput = session()->get('recipe_input_' . Auth::id(), []);
+
+
+        return view('recipes.edit', compact('recipe', 'categories', 'previousInput'));
         // return redirect('/recipes/{recipe}');
     }
 
@@ -127,7 +148,8 @@ class RecipeController extends Controller
     ]);
 
     // レシピの取得
-    $recipe = Recipe::findOrFail($id);
+    $recipe = Recipe::where('id', $id)->where('user_id', Auth::id())->firstOrFail(); // 👈 自分のレシピのみ取得
+    // $recipe = Recipe::findOrFail($id);
 
     // 新規カテゴリーの処理（必要なら）
     if (!empty($validated['new_category'])) {

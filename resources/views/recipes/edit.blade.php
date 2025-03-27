@@ -16,7 +16,7 @@
                                 <!-- レシピ名 -->
                                 <div class="mb-4">
                                     <label for="content__title" class="block text-gray-700 text-sm font-bold mb-2">レシピ名</label>
-                                    <input type="text" name="recipe[title]" value="{{ old('recipe.title', $recipe->title) }}" class="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    <input type="text" name="recipe[title]" value="{{ old('recipe.title', $recipe->title) }}" class="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="off">
                                     <p class="title__error" style="color:red">{{ $errors->first('recipe.title') }}</p>
                                 </div>
                                 
@@ -157,7 +157,7 @@
                                         <div class="js-url-content js-modal-content fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden">
                                             <div class="bg-white p-6 rounded-lg max-w-lg w-full">
                                                 <label for="url">URL</label>
-                                                <input type="text" id="url" name="recipe[url]" value="{{ old('recipe.url', $recipe->url) }}" class="border border-gray-300 rounded w-full p-2">
+                                                <input type="text" id="url" name="recipe[url]" value="{{ old('recipe.url', $recipe->url) }}" class="border border-gray-300 rounded w-full p-2" autocomplete="off">
                                                 <div class="flex gap-2 mt-2">
                                                     <button type="button" id="add-url-id" class="bg-blue-500 text-white px-4 py-2 rounded">追加</button>
                                                     <button type="button" class="close-modal bg-gray-500 text-white px-4 py-2 rounded">閉じる</button>
