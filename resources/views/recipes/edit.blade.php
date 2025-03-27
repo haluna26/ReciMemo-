@@ -192,7 +192,7 @@
                                                 <input type="file" id="image-upload" name="recipe[images][]" multiple accept="image/*" class="border border-gray-300 rounded w-full p-2"/>
                                                 <div class="flex gap-2 mt-2">
                                                     <button type="button" id="add-images-id" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">追加</button>
-                                                    <button type="button" class="close-modal bg-gray-500 text-white px-4 py-2 rounded">閉じる</button>
+                                                    <button type="button" class="close-modal bg-gray-500 text-white px-4 py-2 rounded mt-2">閉じる</button>
                                                 </div>
                                             </div>
                                         </div>
