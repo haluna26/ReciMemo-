@@ -61,7 +61,8 @@
 
 
                             <!-- 説明文 -->
-                            <p>{{ $recipe->description }}</p>
+                            <!-- <p>{{ $recipe->description }}</p> -->
+                            <p>{!! nl2br(e($recipe->description)) !!}</p>
                         </div>
                         <div class="content__memo">
                             <h3 class="bg-amber-500 text-white font-bold font-['BIZ_UDGothic'] px-2 py-1 rounded-lg inline-block">メモ</h3>

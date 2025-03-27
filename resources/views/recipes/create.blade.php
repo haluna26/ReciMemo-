@@ -213,7 +213,8 @@
             // 説明の表示
             if (recipeData.description) {
                 const descEl = document.createElement("p");
-                descEl.textContent = recipeData.description;
+                // descEl.textContent = recipeData.description;
+                descEl.innerHTML = recipeData.description.replace(/\n/g, "<br>"); //　nl2br的な処理。文字列の段落を維持して表示可能。
                 sessionDescription.appendChild(descEl);
             }
 

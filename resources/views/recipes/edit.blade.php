@@ -129,7 +129,8 @@
 
                                             <!-- 説明表示 -->
                                             <p id="description-preview" class="{{ old('recipe.description', $recipe->description) ? 'text-gray-700' : 'text-gray-500' }}">
-                                                {{ old('recipe.description', $recipe->description) ?: '登録された説明はありません' }}
+                                                <!-- {{ old('recipe.description', $recipe->description) ?: '登録された説明はありません' }} -->
+                                                  {!! nl2br(e(old('recipe.description', $recipe->description))) ?: '登録された説明はありません' !!}
                                             </p>
 
                                             <!-- 画像表示 -->
@@ -284,12 +285,21 @@
                                             const descInput = document.getElementById("recipe_description_input");
                                             const newDesc = descInput.value.trim();
                                             const descPreview = document.getElementById("description-preview");
-                                            if(descPreview) {
-                                                if(newDesc) {
-                                                    descPreview.textContent = newDesc;
-                                                    descPreview.className = "text-gray-700";
+                                            // if(descPreview) {
+                                            //     if(newDesc) {
+                                            //         descPreview.textContent = newDesc;
+                                            //         descPreview.className = "text-gray-700";
+                                            //     } else {
+                                            //         descPreview.textContent = "登録された説明はありません";
+                                            //         descPreview.className = "text-gray-500";
+                                            //     }
+                                            // }
+                                            if (descPreview) {
+                                                // 改行を<br>に変換して表示
+                                                if (newDesc) {
+                                                    descPreview.innerHTML = newDesc.replace(/\n/g, "<br>"); // nl2br的な処理
                                                 } else {
-                                                    descPreview.textContent = "登録された説明はありません";
+                                                    descPreview.innerHTML = "登録された情報はありません";
                                                     descPreview.className = "text-gray-500";
                                                 }
                                             }
