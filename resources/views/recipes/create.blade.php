@@ -25,7 +25,7 @@
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
                                     レシピ名
                                 </label>
-                                <input type="text" id="title" name="recipe[title]" placeholder="レシピ名" value="{{ old('recipe.title') }}" class="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <input type="text" id="title" name="recipe[title]" placeholder="レシピ名" value="{{ old('recipe.title') }}" class="shadow appearance-none border rounded w-1/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" autocomplete="off">
                                 <p class="name__error" style="color:red">{{ $errors->first('recipe.title') }}</p>
                             </div>
 
@@ -99,7 +99,7 @@
                                         <div class="js-url-content js-modal-content fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden">
                                             <div class="bg-white p-6 rounded-lg max-w-lg w-full">
                                                 <label for="url">URL</label>
-                                                <input type="text" id="url" name="recipe[url]" class="border border-gray-300 rounded w-full p-2">
+                                                <input type="text" id="url" name="recipe[url]" class="border border-gray-300 rounded w-full p-2" autocomplete="off">
                                                 <button type="button" id="add-url-id" class="bg-blue-500 text-white px-4 py-2 rounded">追加</button>
                                                 <button type="button" onclick="toggleModal(document.querySelector('.js-url-content'), false)" class="bg-gray-500 text-white px-4 py-2 rounded">閉じる</button>
                                             </div>
