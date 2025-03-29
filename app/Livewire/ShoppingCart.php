@@ -4,76 +4,39 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\ShoppingList;
+use Illuminate\Support\Facades\Auth; // 認証情報取得のため追加
 
 class ShoppingCart extends Component
 {
     public $item; //ここにデータが入る（入力中の材料）
-    // public $Ingredients; //取得したデータを保持（登録済みの材料リスト）
-    // public $undoneIngredients;
-    // public $doneIngredients;
-
-    // public function render(ShoppingList $shopping)
-    // {
-    //     return view('livewire.shopping-cart')->with(['Ingredients' => $shopping->get()]);
-    // }
 
     public function render()
     {
-        // $this->Ingredients = ShoppingList::all(); //データを取得
         return view('livewire.shopping-cart', [
-            'items' => ShoppingList::all(),
+            // ログインユーザーのデータのみ取得
+            'items' => ShoppingList::where('user_id', Auth::id())->get(),
         ]);
     }
-
-    // public function addShoppingList()
-    // {
-    //     $ingredient = new ShoppingList();
-    //     $ingredient->ingredient = $this->ingredient;
-    //     $ingredient->save();
-
-    //     $this->ingredient = null;
-
-    //     $this->getShoppingList();
-    // }
 
     public function addShoppingList()
     {
         if (!empty($this->item)) { //空チェックを追加
-            // $ingredient = new ShoppingList();
-            // $ingredient->ingredient = $this->ingredient;
-            // $ingredient->user_id = auth()->id(); //ユーザIDを設定
-            // $ingredient->save();
             ShoppingList::create([
                 'item' => $this->item,
-                'user_id' => auth()->id(),
+                'user_id' => Auth::id(), // ログインユーザーのIDをセット
             ]);
 
-            // $this->ingredient = null; //フィールドをリセット
-            // $this->ingredient = '';
             $this->reset('item'); // Livewireのリセットメソッドを使用
-
-            // リストを即時更新する⇨直ぐに入力欄が空になる
-            // $this->Ingredients = ShoppingList::all();
         }
     }
 
-    // public function updateIngredient($id, $isFinished)
-    // {
-    //     $ingredient = ShoppingList::find($id);
-    //     if($ingredient) {
-    //         $ingredient->done = $isFinished;
-    //         $ingredient->save();
-    //         $this->getShoppingList();
-    //     }
-    // }
-
     public function updateItem($id)
     {
-        $item = ShoppingList::find($id);
+        $item = ShoppingList::where('id', $id)->where('user_id', Auth::id())->first(); // ログインユーザーのデータのみ削除可能にする
+
         if ($item) {
             $item->delete(); //削除の処理
-            // $this->Ingredients = ShoppingList::all();
-            $this->emptySelf('itemDeleted'); //リアルタイム更新
+            $this->emitSelf('refreshComponent'); // Livewireコンポーネントをリフレッシュ
         }
     }
 }
